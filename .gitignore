@@ -1,0 +1,48 @@
+# === Окружение и виртуальные среды ===
+.venv/
+venv/
+ENV/
+env/
+pythonenv/
+
+# === Файлы конфигурации и секреты (КРИТИЧЕСКОЕ) ===
+.env
+*.env
+.env.local
+.env.development
+.env.production
+.secrets
+
+# === Кэш Python ===
+**/__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# === Базы данных и Docker ===
+*.db
+# Игнорируем локальную папку данных Postgres, если вы монтируете её в Docker
+pg_data/
+postgres_data/
+
+# === Логи и системные файлы ===
+*.log
+logs/
+.DS_Store
+Thumbs.db
+
+# === Инструменты разработки и IDE ===
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# === Сборка пакетов (если применимо) ===
+dist/
+build/
+*.egg-info/
