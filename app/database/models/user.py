@@ -7,6 +7,7 @@ from app.database.models.base import Base
 
 
 class UserTable(Base):
+    """таблица юзера"""
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -18,5 +19,6 @@ class UserTable(Base):
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
     status: Mapped[bool] = mapped_column(default=True, nullable=False)
+    is_active: Mapped[bool] = mapped_column(default=True, nullable=False)
 
     wallet: Mapped["WalletTable"] = relationship(back_populates="user", uselist=False)
