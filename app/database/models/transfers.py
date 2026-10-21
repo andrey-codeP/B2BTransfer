@@ -9,6 +9,7 @@ from app.database.models.base import Base
 
 class TransferTable(Base):
     """храним в таблице кто кому сколкьо переводил"""
+
     __tablename__ = "transfers"
 
     id: Mapped[int] = mapped_column(primary_key=True)
