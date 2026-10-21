@@ -8,6 +8,7 @@ from app.database.models.base import Base
 
 class UserTable(Base):
     """таблица юзера"""
+
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(primary_key=True)
