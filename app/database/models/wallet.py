@@ -10,6 +10,7 @@ class WalletTable(Base):
     __tablename__ = "wallets"
 
     id: Mapped[int] = mapped_column(primary_key=True)
+
     balance: Mapped[Decimal] = mapped_column(
         DECIMAL(15, 2), server_default="0.00", nullable=False
     )
