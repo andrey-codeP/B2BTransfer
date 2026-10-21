@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import String, ForeignKey, Numeric, DateTime, func
+from sqlalchemy import ForeignKey, Numeric, DateTime, func
 
 from datetime import datetime
 from decimal import Decimal
@@ -8,6 +8,7 @@ from app.database.models.base import Base
 
 
 class TransferTable(Base):
+    """храним в таблице кто кому сколкьо переводил"""
     __tablename__ = "transfers"
 
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -25,14 +26,10 @@ class TransferTable(Base):
     )
 
     from_wallet: Mapped["WalletTable"] = relationship(
-        "WalletTable",
-        foreign_keys=[from_wallet_id],
-        back_populates="sent_transfer"
+        "WalletTable", foreign_keys=[from_wallet_id], back_populates="sent_transfer"
     )
     to_wallet: Mapped["WalletTable"] = relationship(
-        "WalletTable",
-        foreign_keys=[to_wallet_id],
-        back_populates="recieve_transfer"
+        "WalletTable", foreign_keys=[to_wallet_id], back_populates="recieve_transfer"
     )
 
     history_entries: Mapped[list["HistoryTransferTable"]] = relationship(
