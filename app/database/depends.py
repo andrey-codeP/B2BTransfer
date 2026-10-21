@@ -7,6 +7,7 @@ from typing import Annotated, AsyncGenerator
 
 
 async def get_session() -> AsyncGenerator[AsyncSession, None]:
+    """зависемость для выдачи сессий"""
     async with async_session() as session:
         yield session
 
