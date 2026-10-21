@@ -8,6 +8,8 @@ from app.database.models.base import Base
 
 
 class HistoryTransferTable(Base):
+    """таблица для хранения истории переводов,
+    нужна для счета итоговой суммы"""
     __tablename__ = "history_transfers"
 
     id: Mapped[int] = mapped_column(primary_key=True)
