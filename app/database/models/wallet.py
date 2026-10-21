@@ -7,6 +7,7 @@ from app.database.models.base import Base
 
 
 class WalletTable(Base):
+    """кошелек для юзера"""
     __tablename__ = "wallets"
 
     id: Mapped[int] = mapped_column(primary_key=True)
