@@ -76,7 +76,7 @@ class UserRepository:
         self, user_id: int, new_username: str
     ) -> SUserResponse | None:
         """меняем юзернейм, так как самый частый сценарий
-         в изменениях модели пользователя - изменение юзернейма"""
+        в изменениях модели пользователя - изменение юзернейма"""
         query = select(UserTable).where(
             UserTable.id == user_id, UserTable.is_active == True
         )
