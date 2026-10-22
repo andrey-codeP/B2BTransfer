@@ -23,10 +23,10 @@ class HistoryRepository:
         return hist_model
 
     async def get_history_by_wallet_id(
-            self,
-            wallet_id: int,
-            limit: int = 20,
-            offset: int = 0,
+        self,
+        wallet_id: int,
+        limit: int = 20,
+        offset: int = 0,
     ) -> Sequence[HistoryTransferTable]:
         """получаем историю трансферов с пагинацией"""
         query = (
