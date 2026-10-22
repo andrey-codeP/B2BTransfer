@@ -20,6 +20,8 @@ class SWalletCreate(SWalletBase):
 
 
 class SWalletResponse(SWalletBase):
+    """валидируем ответ пользователю"""
+
     id: int
     user_id: int
     balance: Decimal
