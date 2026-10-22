@@ -8,8 +8,7 @@ from app.database.models.base import Base
 
 
 class HistoryTransferTable(Base):
-    """таблица для хранения истории переводов,
-    нужна для счета итоговой суммы"""
+    """неизменяемый журнал движений и событий по переводам"""
 
     __tablename__ = "history_transfers"
 
