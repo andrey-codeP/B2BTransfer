@@ -15,10 +15,10 @@ class TransferTable(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
 
     to_wallet_id: Mapped[int] = mapped_column(
-        ForeignKey("wallets.id", ondelete="RESTRICT")
+        ForeignKey("wallets.id", ondelete="RESTRICT"), index=True
     )
     from_wallet_id: Mapped[int] = mapped_column(
-        ForeignKey("wallets.id", ondelete="RESTRICT")
+        ForeignKey("wallets.id", ondelete="RESTRICT"), index=True
     )
 
     amount: Mapped[Decimal] = mapped_column(Numeric(15, 2), nullable=False)
