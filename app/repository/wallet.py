@@ -3,7 +3,6 @@ from sqlalchemy import select
 
 from decimal import Decimal
 
-from app.schemas.wallet import SWalletCreate
 from app.database.models import WalletTable
 
 
@@ -11,11 +10,10 @@ class WalletRepository:
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def create_wallet(self, wallet_data: SWalletCreate) -> WalletTable:
+    async def create_wallet(self, balance: Decimal, user_id: int) -> WalletTable:
         """создаем кошелек по моделе SWalletCreate"""
-        wallet_model = wallet_data.model_dump()
 
-        wallet = WalletTable(**wallet_model)
+        wallet = WalletTable(balance=balance, user_id=user_id)
 
         self.session.add(wallet)
 
