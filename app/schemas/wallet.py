@@ -15,8 +15,8 @@ class SWalletCreate(SWalletBase):
     для создания кошелька, но счет по умолчанию
     равен 0.00"""
 
-    user_id: int
     balance: Decimal = Decimal("0.00")
+    user_id: int
 
 
 class SWalletResponse(SWalletBase):
