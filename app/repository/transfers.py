@@ -1,7 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
-from app.schemas.transfers import STransferCreate
+from decimal import Decimal
+
 from app.database.models import TransferTable
 
 
@@ -9,10 +10,15 @@ class TransferRepository:
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def create_transfer(self, transfer: STransferCreate) -> TransferTable | None:
+    async def create_transfer(
+        self, amount: Decimal, from_wallet_id: int, to_wallet_id: int
+    ) -> TransferTable:
         """создаем транзакцию в бд"""
-        transfer_data = transfer.model_dump()
-        transfer_table = TransferTable(**transfer_data)
+        transfer_table = TransferTable(
+            amount=amount,
+            from_wallet_id=from_wallet_id,
+            to_wallet_id=to_wallet_id,
+        )
 
         self.session.add(transfer_table)
 

@@ -2,7 +2,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
 from app.security import password_manager
-from app.schemas.user import SUserCreate
 from app.database.models import UserTable
 
 
@@ -10,15 +9,12 @@ class UserRepository:
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def create_user(self, user: SUserCreate) -> UserTable:
+    async def create_user(self, username: str, password: str) -> UserTable:
         """записываем юзера в бд"""
-        user_to_create = user.model_dump()
-        password = user_to_create.pop("password")
 
         hashed_password = password_manager.create_hash_password(password)
-        user_to_create["hashed_password"] = hashed_password
 
-        user_model = UserTable(**user_to_create)
+        user_model = UserTable(username=username, hashed_password=hashed_password)
 
         self.session.add(user_model)
 

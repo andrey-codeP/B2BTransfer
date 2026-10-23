@@ -13,9 +13,9 @@ class STransferCreate(STransferBase):
     """валидируем то, что юзер присылает нам из вне
     для создания трансфера в бд"""
 
-    amount: Decimal = Field(gt=Decimal("0"))
     from_wallet_id: int
     to_wallet_id: int
+    amount: Decimal = Field(gt=Decimal("0"))
 
 
 class STransferResponse(STransferBase):
