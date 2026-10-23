@@ -6,7 +6,7 @@ from app.database.models import UserTable
 
 
 class UserRepository:
-    def __init__(self, session: AsyncSession):
+    def __init__(self, session: AsyncSession) -> None:
         self.session = session
 
     async def create_user(self, username: str, password: str) -> UserTable:

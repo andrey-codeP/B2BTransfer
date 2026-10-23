@@ -7,7 +7,7 @@ from app.database.models import WalletTable
 
 
 class WalletRepository:
-    def __init__(self, session: AsyncSession):
+    def __init__(self, session: AsyncSession) -> None:
         self.session = session
 
     async def create_wallet(self, balance: Decimal, user_id: int) -> WalletTable:

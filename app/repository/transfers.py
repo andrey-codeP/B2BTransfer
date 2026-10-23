@@ -7,7 +7,7 @@ from app.database.models import TransferTable
 
 
 class TransferRepository:
-    def __init__(self, session: AsyncSession):
+    def __init__(self, session: AsyncSession) -> None:
         self.session = session
 
     async def create_transfer(
