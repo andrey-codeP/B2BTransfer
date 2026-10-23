@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
 from decimal import Decimal
-from typing import Sequence
+from collections.abc import Sequence
 
 from app.database.models.history import HistoryTransferTable
 
