@@ -12,7 +12,9 @@ class UserRepository:
     async def create_user(self, user: UserTable) -> UserTable:
         """записываем юзера в бд"""
 
-        user_model = UserTable(username=user.username, hashed_password=user.hashed_password)
+        user_model = UserTable(
+            username=user.username, hashed_password=user.hashed_password
+        )
 
         self.session.add(user_model)
 
