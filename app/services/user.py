@@ -1,3 +1,4 @@
+
 from app.database.models import UserTable
 from app.security import password_manager
 from app.exceptions.user_exception import UsernameAlreadyExistsError
@@ -10,26 +11,18 @@ class UserServices:
 
     async def create_user(self, user_data: SUserCreate) -> SUserResponse:
         async with self.uow as uow:
-            existing = await uow.user_rep.get_user_by_username(
-                user_data.username
-            )
-
-            if existing is not None:
+            existing = await uow.user_rep.get_user_by_username(user_data.username)
+            if existing:
                 raise UsernameAlreadyExistsError()
 
-            hashed_password = password_manager.create_hash_password(
-                user_data.password
-            )
+            hashed_password = password_manager.create_hash_password(user_data.password)
 
             user = UserTable(
-                username=user_data.username,
-                hashed_password=hashed_password,
-            )
+               username=user_data.username,
+               hashed_password=hashed_password,
+                )
 
-            created_user = await uow.user_rep.create_user(user)
+           created_user = await uow.user_rep.create_user(user)
 
         return SUserResponse.model_validate(created_user)
-
-
-
 
