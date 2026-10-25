@@ -7,3 +7,11 @@ class UsernameAlreadyExistsError(AppException):
     status_code: int = 409
     error_code: str = "username_already_exists"
     message: str = "Username already exists"
+
+
+class UserNotFoundError(AppException):
+    """ошибка если пользователь не найден"""
+
+    status_code = 404
+    error_code = "user_not_found"
+    message = "User not found"
