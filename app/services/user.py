@@ -22,7 +22,7 @@ class UserServices:
                hashed_password=hashed_password,
                 )
 
-           created_user = await uow.user_rep.create_user(user)
+            created_user = await uow.user_rep.create_user(user)
 
         return SUserResponse.model_validate(created_user)
 
