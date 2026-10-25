@@ -10,12 +10,13 @@ class WalletRepository:
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
 
-    async def create_wallet(self, balance: Decimal, user_id: int) -> WalletTable:
+    async def create_wallet(self, user_id: int) -> WalletTable:
         """создаем кошелек по моделе SWalletCreate"""
 
-        wallet = WalletTable(balance=balance, user_id=user_id)
+        wallet = WalletTable(user_id=user_id)
 
         self.session.add(wallet)
+        await self.session.flush()
 
         return wallet
 
