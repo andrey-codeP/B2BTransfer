@@ -6,6 +6,8 @@ class SUser(BaseModel):
 
     username: str
 
+    model_config = ConfigDict(from_attributes=True)
+
 
 class SUserCreate(SUser):
     """валидируем то что принимаем от юзера для создания его в бд"""
@@ -23,5 +25,3 @@ class SUserInDb(SUser):
     """валидация того, что мы возращаем из репозитория"""
 
     hashed_password: str
-
-    model_config = ConfigDict(from_attributes=True)
