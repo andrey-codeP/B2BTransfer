@@ -46,4 +46,3 @@ class TransferService:
                 transfer_id=transfer.id, wallet_id=recipient.id, amount_change=amount
             )
         return True
-
