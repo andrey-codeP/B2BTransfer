@@ -15,3 +15,9 @@ class UserNotFoundError(AppException):
     status_code = 404
     error_code = "user_not_found"
     message = "User not found"
+
+
+class IncorrectPasswordError(AppException):
+    status_code = 401
+    error_code = "incorrect_password"
+    message = "Incorrect password"
