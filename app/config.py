@@ -1,6 +1,7 @@
 from pydantic_settings import SettingsConfigDict, BaseSettings
 from pydantic import PostgresDsn
 
+
 class Settings(BaseSettings):
     """синглтон для настроек"""
 
