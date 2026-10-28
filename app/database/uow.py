@@ -6,10 +6,11 @@ from app.repository.user import UserRepository
 from app.repository.wallet import WalletRepository
 from app.repository.transfers import TransferRepository
 from app.repository.history import HistoryRepository
+from app.database.depends import SessionDep
 
 
 class UnitOfWork:
-    """manages a database transaction and provides repositories sharing one session."""
+    """manages a database transaction and provides repositories sharing one session"""
 
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
@@ -20,6 +21,7 @@ class UnitOfWork:
         self.history_rep = HistoryRepository(session)
 
     async def __aenter__(self) -> "UnitOfWork":
+        self._transaction = await self.session.begin()
         return self
 
     async def __aexit__(
@@ -29,6 +31,6 @@ class UnitOfWork:
         exc_tb: TracebackType | None,
     ) -> None:
         if exc_type is None:
-            await self.session.commit()
+            await self._transaction.commit()
         else:
-            await self.session.rollback()
+            await self._transaction.rollback()
