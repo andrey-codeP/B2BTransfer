@@ -20,6 +20,6 @@ class LoginService:
         if password_manager.verify_password(password, hashed_password) is False:
             raise IncorrectPasswordError()
 
-        token: str = TokenManager.create_access_token(user_id=user_id)
+        access_token: str = TokenManager.create_access_token(user_id=user_id)
 
-        return token
+        return access_token
