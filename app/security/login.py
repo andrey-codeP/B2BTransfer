@@ -11,7 +11,8 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
 
 
 class JWTManager:
-    def create_access_token(self, user_id: int) -> str:
+    @staticmethod
+    def create_access_token(user_id: int) -> str:
         payload = {
             "sub": str(user_id),
             "exp": datetime.now(timezone.utc)
@@ -21,7 +22,8 @@ class JWTManager:
 
         return jwt.encode(payload, settings.SECRET_KEY, settings.ALGORITHM)
 
-    def get_id_by_access_token(self, token: Annotated[str, oauth2_scheme]):
+    @staticmethod
+    def get_id_by_access_token(token: Annotated[str, oauth2_scheme]):
         try:
             payload = jwt.decode(
                 token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
@@ -42,7 +44,7 @@ class JWTManager:
                     detail="the token does not contain an ID",
                 )
 
-            return user_id
+            return int(user_id)
 
         except jwt.ExpiredSignatureError:
             raise HTTPException(

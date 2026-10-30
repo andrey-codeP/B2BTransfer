@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from app.config import settings
 
-DATABASE_URL = settings.DATABASE_URL
+DATABASE_URL = settings.POSTGRES_URL
 
 engine = create_async_engine(DATABASE_URL)
 

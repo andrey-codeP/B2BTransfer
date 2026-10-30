@@ -15,3 +15,5 @@ class WalletNotFoundError(AppException):
     status_code = 404
     error_code = "wallet_not_found"
     message = "wallet not found"
+
+

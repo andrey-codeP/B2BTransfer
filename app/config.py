@@ -1,11 +1,10 @@
 from pydantic_settings import SettingsConfigDict, BaseSettings
-from pydantic import PostgresDsn
 
 
 class Settings(BaseSettings):
     """синглтон для настроек"""
 
-    DATABASE_URL: PostgresDsn
+    POSTGRES_URL: str
 
     ACCESS_TOKEN_EXPIRE_MINUTES: int
     SECRET_KEY: str

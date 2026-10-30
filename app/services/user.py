@@ -13,13 +13,13 @@ class UserServices:
 
     async def create_user(self, user_data: SUserCreate) -> SUserResponse:
         """создаем пользователя"""
+        hashed_password = password_manager.create_hash_password(user_data.password)
+
         async with self.uow as uow:
             existing = await uow.user_rep.get_user_by_username(user_data.username)
 
             if existing is not None:
                 raise UsernameAlreadyExistsError()
-
-            hashed_password = password_manager.create_hash_password(user_data.password)
 
             user = UserTable(
                 username=user_data.username,

@@ -21,10 +21,3 @@ def get_uow(session: SessionDep) -> UnitOfWork:
 
 
 UOWDep = Annotated[UnitOfWork, Depends(get_uow)]
-
-
-def get_user_service(uow: UOWDep) -> UserServices:
-    return UserServices(uow)
-
-
-UserServiceDep = Annotated[UserServices, Depends(get_user_service)]

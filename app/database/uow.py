@@ -6,7 +6,6 @@ from app.repository.user import UserRepository
 from app.repository.wallet import WalletRepository
 from app.repository.transfers import TransferRepository
 from app.repository.history import HistoryRepository
-from app.database.depends import SessionDep
 
 
 class UnitOfWork:

@@ -34,8 +34,11 @@ class WalletService:
 
         return SWalletResponse.model_validate(wallet_model)
 
-    async def delete_wallet(self, wallet_id: int) -> bool:
+    async def delete_wallet(self, user_id: int) -> bool:
         """удаляет кошелек"""
+        wallet = await self.get_wallet_user_id(user_id=user_id)
+        wallet_id = wallet.id
+
         async with self.uow as uow:
             wallet_model = await uow.wallet_rep.delete_wallet_by_id(wallet_id)
 

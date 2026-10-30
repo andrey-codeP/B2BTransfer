@@ -24,11 +24,11 @@ class TransferService:
 
             first_id, second_id = sorted([sender.id, recipient.id])
 
-            await uow.wallet_rep.update_balance(first_id, Decimal("0.00"))
-            await uow.wallet_rep.update_balance(second_id, Decimal("0.00"))
+            wallet1 = await uow.wallet_rep.update_balance(first_id, Decimal("0.00"))
+            wallet2 = await uow.wallet_rep.update_balance(second_id, Decimal("0.00"))
 
-            await uow.session.refresh(sender)
-            await uow.session.refresh(recipient)
+            sender = wallet1 if sender.id == first_id else wallet2
+            recipient = wallet2 if recipient.id == first_id else wallet1
 
             if sender.balance < amount:
                 raise InsufficientFundsError()
