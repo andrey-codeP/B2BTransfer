@@ -5,6 +5,8 @@ from typing import Annotated
 from app.database.dependencies.depends import UOWDep
 from app.services.user import UserServices
 from app.services.login import LoginService
+from app.services.wallet import WalletService
+from app.services.transfers import TransferService
 
 
 def get_user_service(uow: UOWDep) -> UserServices:
@@ -19,3 +21,17 @@ def get_login_service(uow: UOWDep) -> LoginService:
 
 
 LoginServiceDep = Annotated[LoginService, Depends(get_login_service)]
+
+
+def get_wallet_service(uow: UOWDep) -> WalletService:
+    return WalletService(uow)
+
+
+WalletServiceDep = Annotated[WalletService, Depends(get_wallet_service)]
+
+
+def get_transfers_service(uow: UOWDep) -> TransferService:
+    return TransferService(uow)
+
+
+TransferServiceDep = Annotated[TransferService, Depends(get_transfers_service)]
