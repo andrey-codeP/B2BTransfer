@@ -21,7 +21,6 @@ class TransferRepository:
         )
 
         self.session.add(transfer_table)
-        await self.session.flush()
 
         return transfer_table
 
