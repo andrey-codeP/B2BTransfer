@@ -20,8 +20,6 @@ async def create_wallet(user_id: GetId, wallet_service: WalletServiceDep):
 async def delete_by_user_id(
     user_id: GetId, wallet_service: WalletServiceDep
 ) -> Response:
-    wallet = await wallet_service.get_wallet_user_id(user_id=user_id)
-    wallet_id = wallet.id
 
-    await wallet_service.delete_wallet(wallet_id=wallet_id)
+    await wallet_service.delete_wallet(user_id=user_id)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
