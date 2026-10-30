@@ -57,7 +57,7 @@ class WalletRepository:
             .where(WalletTable.id == wallet_id, WalletTable.is_active == True)
             .with_for_update()
         )
-        """самое сладкое, обновляем кошелек пользователя
+        """обновляем кошелек пользователя
             с блокировкой транзакций"""
         wallet = await self.session.execute(query)
         wallet_model = wallet.scalar_one_or_none()
