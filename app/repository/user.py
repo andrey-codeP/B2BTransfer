@@ -12,7 +12,6 @@ class UserRepository:
         """записываем юзера в бд"""
 
         self.session.add(user)
-        await self.session.flush()
 
         return user
 

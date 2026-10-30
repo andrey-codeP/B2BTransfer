@@ -16,7 +16,6 @@ class WalletRepository:
         wallet = WalletTable(user_id=user_id)
 
         self.session.add(wallet)
-        await self.session.flush()
 
         return wallet
 
@@ -49,22 +48,12 @@ class WalletRepository:
 
         return True
 
-    async def update_balance(
-        self, wallet_id: int, amount: Decimal
-    ) -> WalletTable | None:
+    async def get_wallet_by_id_for_update(self, wallet_id: int) -> WalletTable | None:
+        """надежно блокируем строку кошелька для проведения транзакции"""
         query = (
             select(WalletTable)
             .where(WalletTable.id == wallet_id, WalletTable.is_active == True)
             .with_for_update()
         )
-        """обновляем кошелек пользователя
-            с блокировкой транзакций"""
-        wallet = await self.session.execute(query)
-        wallet_model = wallet.scalar_one_or_none()
-
-        if wallet_model is None:
-            return None
-
-        wallet_model.balance += amount
-
-        return wallet_model
+        result = await self.session.execute(query)
+        return result.scalar_one_or_none()
