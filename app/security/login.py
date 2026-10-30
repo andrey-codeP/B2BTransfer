@@ -7,7 +7,7 @@ from typing import Annotated
 
 from app.config import settings
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 
 class JWTManager:
@@ -23,7 +23,7 @@ class JWTManager:
         return jwt.encode(payload, settings.SECRET_KEY, settings.ALGORITHM)
 
     @staticmethod
-    def get_id_by_access_token(token: Annotated[str, oauth2_scheme]):
+    def get_id_by_access_token(token: Annotated[str, Depends(oauth2_scheme)]):
         try:
             payload = jwt.decode(
                 token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
@@ -62,4 +62,4 @@ class JWTManager:
 
 TokenManager = JWTManager()
 
-GetId = Annotated[str, Depends(TokenManager.get_id_by_access_token)]
+GetId = Annotated[int, Depends(TokenManager.get_id_by_access_token)]

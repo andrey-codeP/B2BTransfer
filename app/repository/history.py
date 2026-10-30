@@ -19,7 +19,6 @@ class HistoryRepository:
             transfer_id=transfer_id, wallet_id=wallet_id, amount_change=amount_change
         )
         self.session.add(hist_model)
-        await self.session.flush()
 
         return hist_model
 
