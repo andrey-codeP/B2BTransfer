@@ -1,7 +1,7 @@
 from decimal import Decimal
 
 from app.exceptions.transfer_exception import InsufficientFundsError, SelfTransferError
-from app.exceptions.wallet_exception import WalletNotFoundError, WalletAccessDeniedError
+from app.exceptions.wallet_exception import WalletNotFoundError
 from app.database.uow import UnitOfWork
 
 
