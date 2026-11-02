@@ -38,7 +38,6 @@ class TransferService:
             sender = wallet1 if sender_init.id == first_id else wallet2
             recipient = wallet2 if sender_init.id == first_id else wallet1
 
-
             if sender.balance < amount:
                 raise InsufficientFundsError()
 
