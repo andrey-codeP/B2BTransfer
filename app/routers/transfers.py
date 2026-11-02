@@ -21,6 +21,6 @@ async def create_transfer(
     await transfer_service.create_transfer(
         sender_user_id=sender_user_id,
         recipient_user_id=transfer_data.recipient_user_id,
-        amount=transfer_data.amount
+        amount=transfer_data.amount,
     )
     return Response(status_code=status.HTTP_201_CREATED)

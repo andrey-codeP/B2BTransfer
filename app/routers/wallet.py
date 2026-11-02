@@ -16,6 +16,12 @@ async def create_wallet(user_id: GetId, wallet_service: WalletServiceDep):
     return SWalletResponse.model_validate(wallet)
 
 
+@router.get("/")
+async def check_balance(user_id: GetId, wallet_service: WalletServiceDep):
+    wallet = await wallet_service.get_wallet_user_id(user_id=user_id)
+    return wallet.balance
+
+
 @router.delete("/", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_by_user_id(
     user_id: GetId, wallet_service: WalletServiceDep
