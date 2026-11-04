@@ -5,6 +5,9 @@ class Settings(BaseSettings):
     """синглтон для настроек"""
 
     POSTGRES_URL: str
+    POSTGRES_PASSWORD = str
+    POSTGRES_USER = str
+    POSTGRES_DB = str
 
     ACCESS_TOKEN_EXPIRE_MINUTES: int
     SECRET_KEY: str
