@@ -36,10 +36,10 @@ class WalletService:
 
     async def delete_wallet(self, user_id: int) -> bool:
         """удаляет кошелек"""
-        wallet = await self.get_wallet_user_id(user_id=user_id)
-        wallet_id = wallet.id
-
         async with self.uow as uow:
+            wallet = await self.get_wallet_user_id(user_id=user_id)
+            wallet_id = wallet.id
+
             wallet_model = await uow.wallet_rep.delete_wallet_by_id(wallet_id)
 
             if wallet_model is False:

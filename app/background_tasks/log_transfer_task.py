@@ -14,3 +14,4 @@ def log_transfer_action(
         )
     except Exception as e:
         transfer_logger.error(f"Ошибка при логировании трансфера: {e}")
+        raise e

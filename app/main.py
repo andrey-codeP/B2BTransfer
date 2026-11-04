@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, middleware
+from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
 from app.middlewares.global_log import middleware_for_log
@@ -27,7 +27,7 @@ async def exceptions_handler(request: Request, exc: AppException):
     error_log_text = (
         f"исключение {exc.__class__.__name__} "
         f"при запросе {request.url.path} {request.method}\n"
-        f"детали ошибки: {exc.to_dict}\n"
+        f"детали ошибки: {exc.to_dict()}\n"
         f"с статус кодом {exc.status_code}"
     )
     exceptions_logger.exception(error_log_text)
