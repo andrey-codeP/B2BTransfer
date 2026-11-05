@@ -1,8 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
-from decimal import Decimal
-
 from app.database.models import WalletTable
 
 

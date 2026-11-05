@@ -6,6 +6,8 @@ from app.logger_manager import transfer_logger
 def log_transfer_action(
     sender_id: int, recipient_id: int, amount: Decimal
 ) -> None:
+    """эта фунция нужна для записи логов с
+        транзакциями, включая ошибки"""
     try:
         transfer_logger.info(
             f"--> успешный перевод "

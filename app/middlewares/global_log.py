@@ -1,11 +1,12 @@
-from fastapi import Request
+from fastapi import Request, Response
 
 from time import perf_counter
 
 from app.logger_manager import global_logger
 
 
-async def middleware_for_log(request: Request, call_next):
+async def middleware_for_log(request: Request, call_next) -> Response:
+    """мидлварь для записи глобальных логов"""
     start_time = perf_counter()
 
     global_logger.info(f"--> Был вызван метод {request.method} на {request.url.path}")

@@ -13,6 +13,7 @@ router = APIRouter(prefix="/auth", tags=["auth"])
     "/registry", status_code=status.HTTP_201_CREATED, response_model=SUserResponse
 )
 async def registry_user(user_service: UserServiceDep, user_data: SUserCreate):
+    """регистрируем юзера"""
     user = await user_service.create_user(user_data)
     return user
 
@@ -21,6 +22,7 @@ async def registry_user(user_service: UserServiceDep, user_data: SUserCreate):
 async def login_user(
     login_service: LoginServiceDep,
     user_data: Annotated[OAuth2PasswordRequestForm, Depends()],
-):
+) -> dict:
+    """выдаем аксес токен"""
     access_token = await login_service.login(user_data.username, user_data.password)
     return {"access_token": access_token, "token_type": "bearer"}

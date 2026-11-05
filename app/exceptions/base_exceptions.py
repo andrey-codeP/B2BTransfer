@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 
 class AppError(ABC):
-    """Абстракция для ошибок приложения"""
+    """абстракция для ошибок приложения"""
 
     status_code: int = 500
     error_code: str = "internal_error"
@@ -10,12 +10,12 @@ class AppError(ABC):
 
     @abstractmethod
     def to_dict(self) -> dict:
-        """Метод для сериализации ошибки в ответ для клиента"""
+        """метод для сериализации ошибки в ответ для клиента"""
         pass
 
 
 class AppException(Exception, AppError):
-    """Общий базовый класс для всех кастомных исключений проекта"""
+    """общий базовый класс для всех кастомных исключений проекта"""
 
     def __init__(self, message: str | None = None):
         self.message = message or self.message
