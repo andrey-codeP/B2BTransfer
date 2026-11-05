@@ -19,6 +19,7 @@ async def create_transfer(
     transfer_data: STransferCreate,
     background_tasks: BackgroundTasks
 ):
+    """создаем транзакцию а так же записываем в логи"""
     transfer_logger.info(
         f"Получен запрос на транзакцию от {sender_user_id} к {transfer_data.recipient_user_id}"
     )

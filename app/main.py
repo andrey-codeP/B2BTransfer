@@ -24,6 +24,7 @@ app.include_router(transfer_router)
 
 @app.exception_handler(AppException)
 async def exceptions_handler(request: Request, exc: AppException):
+    """логируем а так же отлавлвиаем исключения"""
     error_log_text = (
         f"исключение {exc.__class__.__name__} "
         f"при запросе {request.url.path} {request.method}\n"

@@ -14,6 +14,8 @@ class UnitOfWork:
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
 
+        #знаю что при большой нагурзке будут проблемы с ними
+        #решил бы через property
         self.user_rep = UserRepository(session)
         self.wallet_rep = WalletRepository(session)
         self.transfer_rep = TransferRepository(session)

@@ -8,7 +8,8 @@ class LoginService:
     def __init__(self, uow: UnitOfWork) -> None:
         self.uow = uow
 
-    async def login(self, username, password):
+    async def login(self, username, password) -> str:
+        """выдаем юзеру аксес токен после проверок"""
         async with self.uow as uow:
             user = await uow.user_rep.get_user_by_username(username=username)
 
