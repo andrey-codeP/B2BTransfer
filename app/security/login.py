@@ -13,6 +13,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 class JWTManager:
     @staticmethod
     def create_access_token(user_id: int) -> str:
+        """создаем аксес токен"""
         payload = {
             "sub": str(user_id),
             "exp": datetime.now(timezone.utc)
@@ -23,7 +24,9 @@ class JWTManager:
         return jwt.encode(payload, settings.SECRET_KEY, settings.ALGORITHM)
 
     @staticmethod
-    def get_id_by_access_token(token: Annotated[str, Depends(oauth2_scheme)]):
+    def get_id_by_access_token(token: Annotated[str, Depends(oauth2_scheme)]) -> int:
+        """зависемость которая достает токен из заголовка
+            делает проверки и выдает айди из токена"""
         try:
             payload = jwt.decode(
                 token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]

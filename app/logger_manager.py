@@ -8,6 +8,7 @@ class LoggerManager:
         self.logger_lvl = logger_lvl
 
     def logger_setup(self) -> logging.Logger:
+        """настраиваем логгер что бы создавать по нему экземпляры"""
         logger = logging.getLogger(self.logger_name)
         logger.setLevel(self.logger_lvl)
 
