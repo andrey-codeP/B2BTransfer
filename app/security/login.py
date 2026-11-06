@@ -26,7 +26,7 @@ class JWTManager:
     @staticmethod
     def get_id_by_access_token(token: Annotated[str, Depends(oauth2_scheme)]) -> int:
         """зависемость которая достает токен из заголовка
-            делает проверки и выдает айди из токена"""
+        делает проверки и выдает айди из токена"""
         try:
             payload = jwt.decode(
                 token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
