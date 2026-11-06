@@ -7,13 +7,19 @@ from app.database.dependencies.depends import get_session
 from app.main import app
 from app.config import settings
 from app.database.models.base import Base
+from app.database.models import (
+    TransferTable,
+    WalletTable,
+    UserTable,
+    HistoryTransferTable,
+)
 
 password = settings.POSTGRES_PASSWORD
 user = settings.POSTGRES_USER
 
 
+DATABASE_URL = "postgresql+asyncpg://test:test@127.0.0.1:5433/test"
 
-DATABASE_URL = f"postgresql+asyncpg://{user}:{password}@localhost:5432/test"
 
 @pytest.fixture(scope="session")
 async def engine():
