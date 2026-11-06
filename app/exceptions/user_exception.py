@@ -19,6 +19,7 @@ class UserNotFoundError(AppException):
 
 class IncorrectPasswordError(AppException):
     """ошибка для некоректного пароля"""
+
     status_code = 401
     error_code = "incorrect_password"
     message = "Incorrect password"

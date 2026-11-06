@@ -17,7 +17,7 @@ async def create_transfer(
     transfer_service: TransferServiceDep,
     sender_user_id: GetId,
     transfer_data: STransferCreate,
-    background_tasks: BackgroundTasks
+    background_tasks: BackgroundTasks,
 ):
     """создаем транзакцию а так же записываем в логи"""
     transfer_logger.info(
@@ -34,6 +34,6 @@ async def create_transfer(
         log_transfer_action,
         sender_id=sender_user_id,
         recipient_id=transfer_data.recipient_user_id,
-        amount=transfer_data.amount
+        amount=transfer_data.amount,
     )
     return Response(status_code=status.HTTP_201_CREATED)

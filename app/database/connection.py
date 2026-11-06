@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from app.config import settings
 
-#настраиваем подключение к постгрес, выдачу сессий и движок
+# настраиваем подключение к постгрес, выдачу сессий и движок
 
 DATABASE_URL = settings.POSTGRES_URL
 
