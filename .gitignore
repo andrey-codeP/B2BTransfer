@@ -1,39 +1,41 @@
 # === Окружение и виртуальные среды ===
 .venv/
 venv/
-ENV/
+/ENV/
 env/
 pythonenv/
 
-# === Файлы конфигурации и секреты (КРИТИЧЕСКОЕ) ===
+# === Секреты (КРИТИЧЕСКОЕ) ===
 .env
-*.env
-.env.local
-.env.development
-.env.production
+.env.*
+!.env.example
 .secrets
 
 # === Кэш Python ===
 **/__pycache__/
 *.py[cod]
-*$py.class
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
 
+# === Покрытие ===
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+
 # === Базы данных и Docker ===
 *.db
-# Игнорируем локальную папку данных Postgres, если вы монтируете её в Docker
+*.sqlite3
+*.db-journal
 pg_data/
 postgres_data/
 
-# === Логи и системные файлы ===
+# === Логи ===
 *.log
 logs/
-.DS_Store
-Thumbs.db
 
-# === Инструменты разработки и IDE ===
+# === Инструменты разработки ===
 .idea/
 .vscode/
 *.suo
@@ -42,7 +44,14 @@ Thumbs.db
 *.sln
 *.swp
 
-# === Сборка пакетов (если применимо) ===
+# === Сборка пакетов ===
 dist/
 build/
 *.egg-info/
+*.whl
+*.tar.gz
+pip-wheel-metadata/
+
+# === Системное ===
+.DS_Store
+Thumbs.db
