@@ -1,6 +1,7 @@
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from httpx import AsyncClient, ASGITransport
 import pytest
+import pytest_asyncio
 
 from app.security.login import TokenManager
 from app.database.dependencies.depends import get_session
@@ -21,7 +22,7 @@ user = settings.POSTGRES_USER
 DATABASE_URL = "postgresql+asyncpg://test:test@127.0.0.1:5433/test"
 
 
-@pytest.fixture(scope="session")
+@pytest_asyncio.fixture(scope="session")
 async def engine():
     eng = create_async_engine(DATABASE_URL)
     try:
@@ -30,7 +31,7 @@ async def engine():
         await eng.dispose()
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest_asyncio.fixture(scope="session", autouse=True)
 async def setup_database(engine):
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
@@ -41,27 +42,22 @@ async def setup_database(engine):
             await conn.run_sync(Base.metadata.drop_all)
 
 
-@pytest.fixture
-async def db_test_session(engine, setup_database):
-    async with engine.connect() as connection:
-        transaction = await connection.begin()
-        session_factory = async_sessionmaker(
-            bind=connection,
-            expire_on_commit=False,
-        )
-        session = session_factory()
-        await session.begin_nested()
-        try:
-            yield session
-        finally:
-            await session.close()
-            await transaction.rollback()
+@pytest_asyncio.fixture
+async def session_factory(engine, setup_database):
+    factory = async_sessionmaker(engine, expire_on_commit=False)
+    yield factory
+    async with engine.begin() as conn:
+        for table in reversed(Base.metadata.sorted_tables):
+            await conn.execute(table.delete())
 
 
-@pytest.fixture
-async def test_client(db_test_session):
+@pytest_asyncio.fixture
+async def test_client(session_factory):
     async def override_get_session():
-        yield db_test_session
+        # я знаю что такой подход при большой паралельности приведет
+        # к переполнению пула соеденений, но паралелизма у меня будет не много
+        async with session_factory() as s:
+            yield s
 
     app.dependency_overrides[get_session] = override_get_session
     app.dependency_overrides[TokenManager.get_id_by_access_token] = lambda: 67
@@ -73,3 +69,8 @@ async def test_client(db_test_session):
             yield client
     finally:
         app.dependency_overrides.clear()
+
+
+@pytest.fixture
+def user_model():
+    return {"username": "олег228", "password": "228228228"}
