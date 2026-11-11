@@ -51,8 +51,13 @@ async def session_factory(engine, setup_database):
             await conn.execute(table.delete())
 
 
+@pytest.fixture
+def get_user_id():
+    return 67
+
+
 @pytest_asyncio.fixture
-async def test_client(session_factory):
+async def test_client(get_user_id, session_factory):
     async def override_get_session():
         # я знаю что такой подход при большой паралельности приведет
         # к переполнению пула соеденений, но паралелизма у меня будет не много
@@ -60,7 +65,7 @@ async def test_client(session_factory):
             yield s
 
     app.dependency_overrides[get_session] = override_get_session
-    app.dependency_overrides[TokenManager.get_id_by_access_token] = lambda: 67
+    app.dependency_overrides[TokenManager.get_id_by_access_token] = lambda: get_user_id
 
     try:
         async with AsyncClient(
