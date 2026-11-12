@@ -1,5 +1,6 @@
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from httpx import AsyncClient, ASGITransport
+from fastapi import status
 import pytest
 import pytest_asyncio
 
@@ -14,6 +15,8 @@ from app.database.models import (
     UserTable,
     HistoryTransferTable,
 )
+
+from dataclasses import dataclass
 
 password = settings.POSTGRES_PASSWORD
 user = settings.POSTGRES_USER
@@ -51,13 +54,30 @@ async def session_factory(engine, setup_database):
             await conn.execute(table.delete())
 
 
-@pytest.fixture
-def get_user_id():
-    return 67
+@dataclass
+class RegisteredUser:
+    id: int
+    headers: dict
 
 
 @pytest_asyncio.fixture
-async def test_client(get_user_id, session_factory):
+async def registered_user(test_client, user_model) -> RegisteredUser:
+    reg = await test_client.post("/auth/registry", json=user_model)
+    assert reg.status_code == status.HTTP_201_CREATED
+    user_id = reg.json()["id"]
+
+    login = await test_client.post(
+        "/auth/login",
+        data={"username": user_model["username"], "password": user_model["password"]},
+    )
+    assert login.status_code == status.HTTP_200_OK
+    token = login.json()["access_token"]
+
+    return RegisteredUser(id=user_id, headers={"Authorization": f"Bearer {token}"})
+
+
+@pytest_asyncio.fixture
+async def test_client(session_factory):
     async def override_get_session():
         # я знаю что такой подход при большой паралельности приведет
         # к переполнению пула соеденений, но паралелизма у меня будет не много
@@ -65,7 +85,6 @@ async def test_client(get_user_id, session_factory):
             yield s
 
     app.dependency_overrides[get_session] = override_get_session
-    app.dependency_overrides[TokenManager.get_id_by_access_token] = lambda: get_user_id
 
     try:
         async with AsyncClient(
