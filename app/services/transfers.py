@@ -19,8 +19,10 @@ class TransferService:
             raise SelfTransferError()
 
         async with self.uow as uow:
-            sender_init = await uow.wallet_rep.get_wallet_by_user_id(sender_user_id)
-            recipient_init = await uow.wallet_rep.get_wallet_by_user_id(
+            sender_init = await uow.wallet_rep.get_wallet_by_user_id_for_update(
+                sender_user_id
+            )
+            recipient_init = await uow.wallet_rep.get_wallet_by_user_id_for_update(
                 recipient_user_id
             )
 
