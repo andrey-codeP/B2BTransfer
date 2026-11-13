@@ -92,7 +92,7 @@ async def test_client(session_factory):
         ) as client:
             yield client
     finally:
-        app.dependency_overrides.clear()
+        app.dependency_overrides.pop(get_session, None)
 
 
 @pytest.fixture
