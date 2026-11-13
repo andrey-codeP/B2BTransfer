@@ -55,3 +55,14 @@ class WalletRepository:
         )
         result = await self.session.execute(query)
         return result.scalar_one_or_none()
+
+    async def get_wallet_by_user_id_for_update(
+        self, user_id: int
+    ) -> WalletTable | None:
+        query = (
+            select(WalletTable)
+            .where(WalletTable.user_id == user_id, WalletTable.is_active == True)
+            .with_for_update()
+        )
+        result = await self.session.execute(query)
+        return result.scalar_one_or_none()
