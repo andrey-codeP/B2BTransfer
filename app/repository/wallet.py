@@ -47,7 +47,7 @@ class WalletRepository:
         return True
 
     async def get_wallet_by_id_for_update(self, wallet_id: int) -> WalletTable | None:
-        """надежно блокируем строку кошелька для проведения транзакции"""
+        """надежно блокируем строку кошелька для проведения транзакции через айди кошелька"""
         query = (
             select(WalletTable)
             .where(WalletTable.id == wallet_id, WalletTable.is_active == True)
@@ -59,6 +59,7 @@ class WalletRepository:
     async def get_wallet_by_user_id_for_update(
         self, user_id: int
     ) -> WalletTable | None:
+        """блокируем строку кошелька  через юзер айди"""
         query = (
             select(WalletTable)
             .where(WalletTable.user_id == user_id, WalletTable.is_active == True)
