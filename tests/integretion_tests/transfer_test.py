@@ -27,7 +27,7 @@ async def funded_transfer_actors(
     test_client: AsyncClient, registered_user: RegisteredUser, session_factory
 ):
     """
-    создаёт отправителя с балансом 100 и получателя с балансом 0
+    создаёт отправителя с балансом 100 и получателя с балансом 10
     """
     # создаем владельцев и их кашельки
     recipient_data = {
