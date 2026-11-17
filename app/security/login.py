@@ -1,5 +1,5 @@
 from fastapi.security import OAuth2PasswordBearer
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, status, Cookie
 import jwt
 
 from datetime import datetime, timezone, timedelta
@@ -24,8 +24,57 @@ class JWTManager:
         return jwt.encode(payload, settings.SECRET_KEY, settings.ALGORITHM)
 
     @staticmethod
+    def create_refresh_token(user_id: int) -> str:
+        """создаем рефреш токен"""
+        payload = {
+            "sub": str(user_id),
+            "exp": datetime.now(timezone.utc)
+            + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_MINUTES),
+            "type": "refresh",
+        }
+
+        return jwt.encode(payload, settings.SECRET_KEY, settings.ALGORITHM)
+
+    @staticmethod
+    def get_id_by_refresh_token(token: Annotated[str | None, Cookie(default=None, alias="refresh_token")]):
+        """зависемость которая достает рефреш токен из куков и делает проверки"""
+        try:
+            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+
+            if payload.get("type") != "refresh":
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="invalid token type",
+                    headers={"WWW-Authenticate": "Bearer"},
+                )
+
+            user_id: str = payload.get("sub")
+
+            if user_id is None:
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="the token does not contain an ID"
+                )
+
+            return int(user_id)
+
+        except jwt.ExpiredSignatureError:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid or expired token",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        except jwt.InvalidTokenError:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="the token is invalid",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+
+
+    @staticmethod
     def get_id_by_access_token(token: Annotated[str, Depends(oauth2_scheme)]) -> int:
-        """зависемость которая достает токен из заголовка
+        """зависемость которая достает аксес токен из заголовка
         делает проверки и выдает айди из токена"""
         try:
             payload = jwt.decode(
@@ -39,7 +88,7 @@ class JWTManager:
                     headers={"WWW-Authenticate": "Bearer"},
                 )
 
-            user_id = payload.get("sub")
+            user_id: str = payload.get("sub")
 
             if user_id is None:
                 raise HTTPException(
@@ -66,3 +115,5 @@ class JWTManager:
 TokenManager = JWTManager()
 
 GetId = Annotated[int, Depends(TokenManager.get_id_by_access_token)]
+GetRefreshId = Annotated[int, Depends(TokenManager.get_id_by_refresh_token)]
+
