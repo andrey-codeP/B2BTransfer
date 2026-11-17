@@ -23,3 +23,5 @@ class UserTable(Base):
     is_active: Mapped[bool] = mapped_column(default=True, nullable=False)
 
     wallet: Mapped["WalletTable"] = relationship(back_populates="user", uselist=False)
+    refresh_tokens: Mapped["RefreshToken"] = relationship(back_populates="user")
+
