@@ -36,10 +36,14 @@ class JWTManager:
         return jwt.encode(payload, settings.SECRET_KEY, settings.ALGORITHM)
 
     @staticmethod
-    def get_id_by_refresh_token(token: Annotated[str | None, Cookie(default=None, alias="refresh_token")]):
+    def get_id_by_refresh_token(
+        token: Annotated[str | None, Cookie(default=None, alias="refresh_token")],
+    ):
         """зависемость которая достает рефреш токен из куков и делает проверки"""
         try:
-            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+            payload = jwt.decode(
+                token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
+            )
 
             if payload.get("type") != "refresh":
                 raise HTTPException(
@@ -53,7 +57,7 @@ class JWTManager:
             if user_id is None:
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail="the token does not contain an ID"
+                    detail="the token does not contain an ID",
                 )
 
             return int(user_id)
@@ -70,7 +74,6 @@ class JWTManager:
                 detail="the token is invalid",
                 headers={"WWW-Authenticate": "Bearer"},
             )
-
 
     @staticmethod
     def get_id_by_access_token(token: Annotated[str, Depends(oauth2_scheme)]) -> int:
@@ -116,4 +119,3 @@ TokenManager = JWTManager()
 
 GetId = Annotated[int, Depends(TokenManager.get_id_by_access_token)]
 GetRefreshId = Annotated[int, Depends(TokenManager.get_id_by_refresh_token)]
-
