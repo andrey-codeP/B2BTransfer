@@ -24,4 +24,3 @@ class UserTable(Base):
 
     wallet: Mapped["WalletTable"] = relationship(back_populates="user", uselist=False)
     refresh_tokens: Mapped["RefreshToken"] = relationship(back_populates="user")
-
