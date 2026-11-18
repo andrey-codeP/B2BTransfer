@@ -6,6 +6,7 @@ from app.repository.user import UserRepository
 from app.repository.wallet import WalletRepository
 from app.repository.transfers import TransferRepository
 from app.repository.history import HistoryRepository
+from app.repository.token import RefreshTokenRepository
 
 
 class UnitOfWork:
@@ -20,6 +21,7 @@ class UnitOfWork:
         self.wallet_rep = WalletRepository(session)
         self.transfer_rep = TransferRepository(session)
         self.history_rep = HistoryRepository(session)
+        self.token_rep = RefreshTokenRepository(session)
 
     async def __aenter__(self) -> "UnitOfWork":
         self._transaction = await self.session.begin()
