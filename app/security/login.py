@@ -29,7 +29,7 @@ class JWTManager:
         payload = {
             "sub": str(user_id),
             "exp": datetime.now(timezone.utc)
-            + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_MINUTES),
+            + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS),
             "type": "refresh",
         }
 
@@ -38,8 +38,11 @@ class JWTManager:
     @staticmethod
     def get_id_by_refresh_token(
         token: Annotated[str | None, Cookie(default=None, alias="refresh_token")],
-    ):
+    ) -> int:
         """зависемость которая достает рефреш токен из куков и делает проверки"""
+        if not token:
+            raise HTTPException(status_code=401, detail="Refresh token missing")
+
         try:
             payload = jwt.decode(
                 token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]

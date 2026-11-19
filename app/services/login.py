@@ -22,8 +22,11 @@ class LoginService:
 
         hashed_password = user.hashed_password
 
+        # проверку пароля и генерация токена вынесена вне uow что бы не держать
+        # транзакцию открытой, потому что CPU задачи
         if password_manager.verify_password(password, hashed_password) is False:
             raise IncorrectPasswordError()
+
 
         access_token = TokenManager.create_access_token(user.id)
         refresh_token = TokenManager.create_refresh_token(user.id)
