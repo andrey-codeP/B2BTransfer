@@ -1,16 +1,24 @@
 from fastapi.security import OAuth2PasswordBearer
-from fastapi import Depends, HTTPException, status, Cookie
+from fastapi import Depends, HTTPException, status
+import hashlib
+import uuid
 import jwt
 
 from datetime import datetime, timezone, timedelta
 from typing import Annotated
 
+from app.exceptions.token_exception import InvalidTokenError
 from app.config import settings
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 
 class JWTManager:
+    @staticmethod
+    def hash_token(token: str) -> str:
+        """хешируем токен для хранения в бд"""
+        return hashlib.sha256(token.encode()).hexdigest()
+
     @staticmethod
     def create_access_token(user_id: int) -> str:
         """создаем аксес токен"""
@@ -19,6 +27,7 @@ class JWTManager:
             "exp": datetime.now(timezone.utc)
             + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES),
             "type": "access",
+            "jti": str(uuid.uuid4()),
         }
 
         return jwt.encode(payload, settings.SECRET_KEY, settings.ALGORITHM)
@@ -31,89 +40,40 @@ class JWTManager:
             "exp": datetime.now(timezone.utc)
             + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS),
             "type": "refresh",
+            "jti": str(uuid.uuid4()),
         }
 
         return jwt.encode(payload, settings.SECRET_KEY, settings.ALGORITHM)
 
     @staticmethod
-    def get_id_by_refresh_token(
-        token: Annotated[str | None, Cookie(default=None, alias="refresh_token")],
+    def decode_token(token: str, expected_type: str) -> int:
+        """декодирует токен, проверяет тип и возвращает user_id"""
+        try:
+            payload = jwt.decode(
+                token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
+            )
+            if payload.get("type") != expected_type:
+                raise InvalidTokenError()
+
+            user_id = payload.get("sub")
+            if user_id is None:
+                raise InvalidTokenError()
+
+            return int(user_id)
+        except jwt.PyJWTError:
+            raise InvalidTokenError()
+
+    @classmethod
+    def get_id_by_access_token(
+        cls, token: Annotated[str, Depends(oauth2_scheme)]
     ) -> int:
-        """зависемость которая достает рефреш токен из куков и делает проверки"""
-        if not token:
-            raise HTTPException(status_code=401, detail="Refresh token missing")
-
+        """зависимость для защищенных эндпоинтов"""
         try:
-            payload = jwt.decode(
-                token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
-            )
-
-            if payload.get("type") != "refresh":
-                raise HTTPException(
-                    status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail="invalid token type",
-                    headers={"WWW-Authenticate": "Bearer"},
-                )
-
-            user_id: str = payload.get("sub")
-
-            if user_id is None:
-                raise HTTPException(
-                    status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail="the token does not contain an ID",
-                )
-
-            return int(user_id)
-
-        except jwt.ExpiredSignatureError:
+            return cls.decode_token(token, expected_type="access")
+        except InvalidTokenError:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid or expired token",
-                headers={"WWW-Authenticate": "Bearer"},
-            )
-        except jwt.InvalidTokenError:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="the token is invalid",
-                headers={"WWW-Authenticate": "Bearer"},
-            )
-
-    @staticmethod
-    def get_id_by_access_token(token: Annotated[str, Depends(oauth2_scheme)]) -> int:
-        """зависемость которая достает аксес токен из заголовка
-        делает проверки и выдает айди из токена"""
-        try:
-            payload = jwt.decode(
-                token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
-            )
-
-            if payload.get("type") != "access":
-                raise HTTPException(
-                    status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail="invalid token type",
-                    headers={"WWW-Authenticate": "Bearer"},
-                )
-
-            user_id: str = payload.get("sub")
-
-            if user_id is None:
-                raise HTTPException(
-                    status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail="the token does not contain an ID",
-                )
-
-            return int(user_id)
-
-        except jwt.ExpiredSignatureError:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid or expired token",
-                headers={"WWW-Authenticate": "Bearer"},
-            )
-        except jwt.InvalidTokenError:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="the token is invalid",
+                detail="Invalid or expired access token",
                 headers={"WWW-Authenticate": "Bearer"},
             )
 
@@ -121,4 +81,3 @@ class JWTManager:
 TokenManager = JWTManager()
 
 GetId = Annotated[int, Depends(TokenManager.get_id_by_access_token)]
-GetRefreshId = Annotated[int, Depends(TokenManager.get_id_by_refresh_token)]

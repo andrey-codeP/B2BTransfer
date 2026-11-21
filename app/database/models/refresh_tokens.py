@@ -20,7 +20,8 @@ class RefreshToken(Base):
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
 
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), index=True
+    )
 
-    # Указываем имя relationship-поля из UserTable ("refresh_tokens")
     user: Mapped["UserTable"] = relationship(back_populates="refresh_tokens")
